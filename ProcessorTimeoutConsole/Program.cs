@@ -11,8 +11,6 @@ namespace ProcessorTimeoutConsole
     {
         static void Main(string[] args)
         {
-            DataTable workingCall = new DataTable();
-            DataTable brokenCall = new DataTable();
             try
             {
                 QueryService querySvc = new QueryService();
@@ -20,7 +18,7 @@ namespace ProcessorTimeoutConsole
                 var workingQuery = querySvc.CreateQueryTextForWorkingQueryString();
                 WriteLine("Starting first, working call");
                 var timerWorkingQuery = Stopwatch.StartNew();
-                workingCall = QueryDTADO(workingQuery, ConfigurationManager.ConnectionStrings["SQLSERVERADONET35"].ConnectionString);
+                var workingCall = QueryDTADO(workingQuery, ConfigurationManager.ConnectionStrings["SQLSERVERADONET35"].ConnectionString);
                 timerWorkingQuery.Stop();
                 WriteLine($"{workingCall.Rows.Count} Records returned from working call and took {timerWorkingQuery.Elapsed}");
 
@@ -29,7 +27,7 @@ namespace ProcessorTimeoutConsole
                 var brokenQuery = querySvc.CreateQueryTextForBrokenQuery();
                 WriteLine("Starting second, broken call");
                 var timerBrokenQuery = Stopwatch.StartNew();
-                brokenCall = QueryDTADO(brokenQuery, ConfigurationManager.ConnectionStrings["SQLSERVERADONET35"].ConnectionString);
+                var brokenCall = QueryDTADO(brokenQuery, ConfigurationManager.ConnectionStrings["SQLSERVERADONET35"].ConnectionString);
                 timerBrokenQuery.Stop();
                 WriteLine($"{brokenCall.Rows.Count} Records returned from working call and took {timerBrokenQuery.Elapsed}");
 
