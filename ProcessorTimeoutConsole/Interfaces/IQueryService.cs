@@ -2,7 +2,7 @@
 {
     public interface IQueryService
     {
-        void RunBrokenQuery();
-        void RunWorkingQuery();
+        void RunBrokenQuery(int runCount);
+        void RunWorkingQuery(int runCount);
     }
 }

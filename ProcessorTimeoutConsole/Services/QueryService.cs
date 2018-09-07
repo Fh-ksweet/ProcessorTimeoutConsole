@@ -3,6 +3,7 @@ using System;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 
 namespace ProcessorTimeoutConsole.Services
 {
@@ -24,30 +25,38 @@ namespace ProcessorTimeoutConsole.Services
             _writer = writer;
         }
 
-        public void RunBrokenQuery()
+        public void RunBrokenQuery(int runCount)
         {
             var brokenQuery = _queryStringCreationService.CreateQueryTextForBrokenQuery();
 
+            _writer.Linebreak();
             _logger.Info("Starting broken query");
 
-            var brokenCall = _perfMonitor.Run(() => QueryDTADO(brokenQuery), "Run Broken Query");
-            var recordCount = brokenCall.Rows.Count;
-            var loadTime = _perfMonitor.GetTimeTakenToExecute("Run Broken Query");
+            var callTime = Stopwatch.StartNew();
+            var brokenCall = QueryDTADO(brokenQuery);
+            callTime.Stop();
 
-            _writer.WriteLine($"Load Time Took {loadTime} and loaded {recordCount} records");
+            var recordCount = brokenCall.Rows.Count;
+
+            _writer.WriteLine($"Load Time Took {callTime.Elapsed} and loaded {recordCount} records");
+            _writer.Linebreak();
         }
 
-        public void RunWorkingQuery()
+        public void RunWorkingQuery(int runCount)
         {
             var workingQuery = _queryStringCreationService.CreateQueryTextForWorkingQueryString();
 
+            _writer.Linebreak();
             _logger.Info("Starting working query");
 
-            var workingCall = _perfMonitor.Run(() => QueryDTADO(workingQuery), "Run Working Query");
-            var recordCount = workingCall.Rows.Count;
-            var loadTime = _perfMonitor.GetTimeTakenToExecute("Run Working Query");
+            var callTime = Stopwatch.StartNew();
+            var workingCall = QueryDTADO(workingQuery);
+            callTime.Stop();
 
-            _writer.WriteLine($"Load Time Took {loadTime} and loaded {recordCount} records");
+            var recordCount = workingCall.Rows.Count;
+
+            _writer.WriteLine($"Load Time Took {callTime.Elapsed} and loaded {recordCount} records");
+            _writer.Linebreak();
         }
 
         private static DataTable QueryDTADO(string QueryString)

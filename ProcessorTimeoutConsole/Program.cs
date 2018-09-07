@@ -1,4 +1,5 @@
 ﻿using StructureMap;
+using System;
 using static System.Console;
 
 namespace ProcessorTimeoutConsole
@@ -11,9 +12,25 @@ namespace ProcessorTimeoutConsole
 
             var app = container.GetInstance<Application>();
 
-            app.Run();
+            bool shouldRun = true;
 
-            ReadKey();
+            while (shouldRun)
+            {
+                app.Run();
+
+                WriteLine();
+
+                var color = ForegroundColor;
+                ForegroundColor = ConsoleColor.Cyan;
+                WriteLine("Run Again? Y/N y/n");
+                ForegroundColor = color;
+
+                var userRunAgainInput = ReadKey().KeyChar.ToString().ToLower();
+
+                if (userRunAgainInput != "y") { shouldRun = false; }
+
+                Clear();
+            }
         }
     }
 }
