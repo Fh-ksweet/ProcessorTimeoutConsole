@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Application.cs" />
     <Compile Include="ConsoleRegistry.cs" />
+    <Compile Include="Exceptions\DatabaseException.cs" />
     <Compile Include="Interfaces\ILog.cs" />
     <Compile Include="Interfaces\IPerformanceMonitor.cs" />
     <Compile Include="Interfaces\IQueryService.cs" />

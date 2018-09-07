@@ -22,4 +22,7 @@ Global
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FEACADB1-4123-4176-8014-6B6C393FA8A6}
 	EndGlobalSection
+	GlobalSection(NDepend) = preSolution
+		Project = ".\ProcessorTimeoutConsole.ndproj"
+	EndGlobalSection
 EndGlobal
