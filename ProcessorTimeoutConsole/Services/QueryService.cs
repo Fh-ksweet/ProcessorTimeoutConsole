@@ -8,19 +8,19 @@ namespace ProcessorTimeoutConsole.Services
 {
     public class QueryService : IQueryService
     {
-        private readonly IQueryStringCreationService _queryStringCreationService;
-        private readonly IPerformanceMonitor _perfMonitor;
         private readonly ILog _logger;
+        private readonly IPerformanceMonitor _perfMonitor;
+        private readonly IQueryStringCreationService _queryStringCreationService;
         private readonly IWriter _writer;
 
-        public QueryService(IQueryStringCreationService queryStringCreationService,
+        public QueryService(ILog logger,
             IPerformanceMonitor perfMonitor,
-            ILog logger,
+            IQueryStringCreationService queryStringCreationService,
             IWriter writer)
         {
-            _queryStringCreationService = queryStringCreationService;
-            _perfMonitor = perfMonitor;
             _logger = logger;
+            _perfMonitor = perfMonitor;
+            _queryStringCreationService = queryStringCreationService;
             _writer = writer;
         }
 
@@ -30,10 +30,7 @@ namespace ProcessorTimeoutConsole.Services
 
             _logger.Info("Starting broken query");
 
-            var workingCall = _perfMonitor.Run(
-                    () => QueryDTADO(brokenQuery,
-                        ConfigurationManager.ConnectionStrings["SQLSERVERADONET35"].ConnectionString),
-                    "Run Broken Query");
+            var workingCall = _perfMonitor.Run(() => QueryDTADO(brokenQuery), "Run Broken Query");
 
             var recordCount = workingCall.Rows.Count;
             var loadTime = _perfMonitor.GetTimeTakenToExecute("Run Broken Query");
@@ -47,10 +44,7 @@ namespace ProcessorTimeoutConsole.Services
 
             _logger.Info("Starting working query");
 
-            var brokenCall = _perfMonitor.Run(
-                () => QueryDTADO(workingQuery,
-                    ConfigurationManager.ConnectionStrings["SQLSERVERADONET35"].ConnectionString),
-                "Run Working Query");
+            var brokenCall = _perfMonitor.Run(() => QueryDTADO(workingQuery), "Run Working Query");
 
             var recordCount = brokenCall.Rows.Count;
             var loadTime = _perfMonitor.GetTimeTakenToExecute("Run Working Query");
@@ -58,8 +52,10 @@ namespace ProcessorTimeoutConsole.Services
             _writer.WriteLine($"Load Time Took {loadTime} and loaded {recordCount} records");
         }
 
-        public DataTable QueryDTADO(string QueryString, string connString)
+        private DataTable QueryDTADO(string QueryString)
         {
+            var connString = ConfigurationManager.ConnectionStrings["SQLSERVERADONET35"].ConnectionString;
+
             SqlConnection oConnection = new SqlConnection(connString);
             oConnection.Open();
             SqlCommand oCommand = new SqlCommand(QueryString, oConnection);
