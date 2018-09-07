@@ -1,8 +1,9 @@
-﻿using System;
+﻿using ProcessorTimeoutConsole.Interfaces;
+using System;
 
-namespace ProcessorTimeoutConsole
+namespace ProcessorTimeoutConsole.Services
 {
-    public class QueryService
+    public class QueryStringCreationService : IQueryStringCreationService
     {
         public string CreateQueryTextForBrokenQuery()
         {
